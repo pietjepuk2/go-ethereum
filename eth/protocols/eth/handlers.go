@@ -279,12 +279,15 @@ func handleGetReceipts66(backend Backend, msg Decoder, peer *Peer) error {
 	}
 
 	if peer.Peer.Info().Network.Trusted {
-		log.Info(fmt.Sprintf("PIETJE: Got trusted node GetReceipts request with id %d from peer %s", query.RequestId, peer.Peer.Info().ID))
 
-		if query.RequestId == 999 {
+		log.Info(fmt.Sprintf("PIETJE: Got %d'th trusted node GetReceipts request with id %d from peer %s", peer.nrGetReceiptRequests, query.RequestId, peer.Peer.Info().ID))
+
+		if peer.nrGetReceiptRequests == 999 {
 			log.Info(fmt.Sprintf("PIETJE: Delaying request by 10 seconds. RequestId %d from peer %s", query.RequestId, peer.Peer.Info().ID))
 			time.Sleep(10000.0 * time.Millisecond)
 		}
+
+		peer.nrGetReceiptRequests += 1
 	}
 
 	response := ServiceGetReceiptsQuery(backend.Chain(), query.GetReceiptsPacket)

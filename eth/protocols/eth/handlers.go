@@ -19,6 +19,7 @@ package eth
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core"
@@ -276,6 +277,14 @@ func handleGetReceipts66(backend Backend, msg Decoder, peer *Peer) error {
 	if err := msg.Decode(&query); err != nil {
 		return fmt.Errorf("%w: message %v: %v", errDecode, msg, err)
 	}
+
+	if peer.Peer.Info().Network.Trusted {
+		if query.RequestId%5 == 0 {
+			log.Info("PIETJE: Delaying request by one minute. RequestId %d from peer %s", query.RequestId, peer.Peer.Info().ID)
+			time.Sleep(60.0 * time.Millisecond)
+		}
+	}
+
 	response := ServiceGetReceiptsQuery(backend.Chain(), query.GetReceiptsPacket)
 	return peer.ReplyReceiptsRLP(query.RequestId, response)
 }

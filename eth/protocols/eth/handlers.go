@@ -280,8 +280,8 @@ func handleGetReceipts66(backend Backend, msg Decoder, peer *Peer) error {
 
 	if peer.Peer.Info().Network.Trusted {
 		if query.RequestId%5 == 0 {
-			log.Info("PIETJE: Delaying request by one minute. RequestId %d from peer %s", query.RequestId, peer.Peer.Info().ID)
-			time.Sleep(60.0 * time.Millisecond)
+			log.Info(fmt.Sprintf("PIETJE: Delaying request by one minute. RequestId %d from peer %s", query.RequestId, peer.Peer.Info().ID))
+			time.Sleep(60000.0 * time.Millisecond)
 		}
 	}
 
